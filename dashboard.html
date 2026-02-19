@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Voice Translator Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            color: var(--primary);
+        }
+
+        .logo-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Language Selection */
+        .language-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .language-box {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .language-box label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .language-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .language-select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Control Buttons */
+        .controls-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+            color: white;
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, var(--danger) 0%, #f87171 100%);
+            color: white;
+        }
+
+        .btn-translate {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        /* Text Areas */
+        .text-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .text-box {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .text-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .text-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark);
+        }
+
+        .text-header i {
+            font-size: 20px;
+        }
+
+        .original-text .text-header h3 i {
+            color: var(--primary);
+        }
+
+        .translated-text .text-header h3 i {
+            color: var(--secondary);
+        }
+
+        .text-content {
+            flex-grow: 1;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            min-height: 200px;
+            overflow-y: auto;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .text-content:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+        }
+
+        /* TTS Section */
+        .tts-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .audio-player-container {
+            margin: 20px 0;
+        }
+
+        audio {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .tts-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-tts {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+            color: white;
+        }
+
+        .btn-stop-audio {
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+            color: white;
+        }
+
+        /* Action Buttons */
+        .actions-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .action-group {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-action {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%);
+            color: #1f2937;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            color: white;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            color: white;
+        }
+
+        .btn-both-pdf {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .language-grid,
+            .text-section {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .text-content {
+                min-height: 150px;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .listening {
+            animation: pulse 1.5s infinite;
+            color: var(--success) !important;
+        }
+
+        .translating {
+            animation: pulse 1.5s infinite;
+            color: var(--primary) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-language"></i>
+                <div class="logo-text">
+                    <h1>Voice Translator Pro</h1>
+                    <p>Real-time Speech to Text Translation</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <a href="/logout" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Language Selection -->
+        <section class="language-section">
+            <h2 class="section-title">
+                <i class="fas fa-globe-americas"></i> Language Settings
+            </h2>
+            <div class="language-grid">
+                <div class="language-box">
+                    <label><i class="fas fa-microphone"></i> Speak Language</label>
+                    <select id="language" class="language-select">
+                        <option value="en-IN">English (India)</option>
+                        <option value="kn-IN" selected>Kannada (India)</option>
+                        <option value="hi-IN">Hindi (India)</option>
+                        <option value="ta-IN">Tamil (India)</option>
+                        <option value="te-IN">Telugu (India)</option>
+                        <option value="ml-IN">Malayalam (India)</option>
+                    </select>
+                </div>
+                <div class="language-box">
+                    <label><i class="fas fa-exchange-alt"></i> Translate To</label>
+                    <select id="targetLang" class="language-select">
+                        <option value="en">English</option>
+                        <option value="kn" selected>Kannada</option>
+                        <option value="hi">Hindi</option>
+                        <option value="ta">Tamil</option>
+                        <option value="te">Telugu</option>
+                        <option value="ml">Malayalam</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Control Buttons -->
+        <section class="controls-section">
+            <h2 class="section-title">
+                <i class="fas fa-gamepad"></i> Voice Controls
+            </h2>
+            <div class="button-group">
+                <button class="btn btn-start" onclick="startSpeech()">
+                    <i class="fas fa-microphone"></i> Start Listening
+                </button>
+                <button class="btn btn-stop" onclick="stopSpeech()">
+                    <i class="fas fa-stop"></i> Stop Listening
+                </button>
+                <button class="btn btn-translate" onclick="translateText()">
+                    <i class="fas fa-language"></i> Translate Text
+                </button>
+            </div>
+        </section>
+
+        <!-- Text Areas -->
+        <section class="text-section">
+            <!-- Original Text -->
+            <div class="text-box original-text">
+                <div class="text-header">
+                    <h3>
+                        <i class="fas fa-keyboard"></i> Original Text
+                    </h3>
+                    <span id="status-indicator" class="status-idle">Ready</span>
+                </div>
+                <div id="text" class="text-content" data-placeholder="Start speaking to see text here...">
+                    Speak something...
+                </div>
+            </div>
+
+            <!-- Translated Text -->
+            <div class="text-box translated-text">
+                <div class="text-header">
+                    <h3>
+                        <i class="fas fa-globe"></i> Translated Text
+                    </h3>
+                    <span id="translation-status">Waiting...</span>
+                </div>
+                <div id="translated" class="text-content" data-placeholder="Translated text will appear here...">
+                    Translated text will appear here...
+                </div>
+            </div>
+        </section>
+
+        <!-- Text-to-Speech Section -->
+        <section class="tts-section" id="ttsControls">
+            <h2 class="section-title">
+                <i class="fas fa-volume-up"></i> Text-to-Speech
+            </h2>
+            <div class="audio-player-container">
+                <audio id="audioPlayer" controls></audio>
+            </div>
+            <div class="tts-buttons">
+                <button class="btn btn-tts" onclick="speakOriginalText()">
+                    <i class="fas fa-play"></i> Speak Original
+                </button>
+                <button class="btn btn-tts" onclick="speakTranslatedText()">
+                    <i class="fas fa-play-circle"></i> Speak Translated
+                </button>
+                <button class="btn btn-stop-audio" onclick="stopAudio()">
+                    <i class="fas fa-stop"></i> Stop Audio
+                </button>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="actions-section">
+            <!-- Original Text Actions -->
+            <div class="action-group">
+                <h3 class="section-title">
+                    <i class="fas fa-copy"></i> Original Text Actions
+                </h3>
+                <div class="action-buttons">
+                    <button class="btn-action btn-copy" onclick="copyText('text')">
+                        <i class="far fa-copy"></i> Copy to Clipboard
+                    </button>
+                    <button class="btn-action btn-download" onclick="downloadText('text', 'original.txt')">
+                        <i class="fas fa-download"></i> Download as TXT
+                    </button>
+                    <button class="btn-action btn-pdf" onclick="downloadPDF('text', 'original.pdf', 'Original Text')">
+                        <i class="fas fa-file-pdf"></i> Download as PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Translated Text Actions -->
+            <div class="action-group">
+                <h3 class="section-title">
+                    <i class="fas fa-copy"></i> Translated Text Actions
+                </h3>
+                <div class="action-buttons">
+                    <button class="btn-action btn-copy" onclick="copyText('translated')">
+                        <i class="far fa-copy"></i> Copy to Clipboard
+                    </button>
+                    <button class="btn-action btn-download" onclick="downloadText('translated', 'translated.txt')">
+                        <i class="fas fa-download"></i> Download as TXT
+                    </button>
+                    <button class="btn-action btn-pdf"
+                        onclick="downloadPDF('translated', 'translated.pdf', 'Translated Text')">
+                        <i class="fas fa-file-pdf"></i> Download as PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Combined Actions -->
+            <div class="action-group">
+                <h3 class="section-title">
+                    <i class="fas fa-file-archive"></i> Combined Actions
+                </h3>
+                <div class="action-buttons">
+                    <button class="btn-action btn-both-pdf" onclick="saveBothPDF()">
+                        <i class="fas fa-file-pdf"></i> Download Both as PDF
+                    </button>
+                    <button class="btn-action btn-stop" onclick="clearAll()">
+                        <i class="fas fa-trash-alt"></i> Clear All Text
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><i class="far fa-copyright"></i> 2026 VSR Voice Translator Pro | Made with <i class="fas fa-heart"
+                style="color: #ef4444;"></i> for seamless communication</p>
+        <p>Supports 6 languages with real-time voice recognition and text-to-speech</p>
+    </footer>
+
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- JavaScript -->
+    <script>
+        let recognition;
+        let currentAudio = null;
+        let isListening = false;
+
+        // Status indicators
+        const statusEl = document.getElementById('status-indicator');
+        const translationStatusEl = document.getElementById('translation-status');
+
+        // Speech Recognition
+        function startSpeech() {
+            if (!('webkitSpeechRecognition' in window)) {
+                document.getElementById("text").innerText = "❌ Browser not supported. Please use Chrome or Edge.";
+                return;
+            }
+
+            const lang = document.getElementById("language").value;
+            recognition = new webkitSpeechRecognition();
+            recognition.lang = lang;
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                isListening = true;
+                statusEl.textContent = "🎤 Listening...";
+                statusEl.classList.add("listening");
+            };
+
+            recognition.onresult = (event) => {
+                let finalText = "";
+                for (let i = 0; i < event.results.length; i++) {
+                    finalText += event.results[i][0].transcript;
+                }
+                document.getElementById("text").innerText = finalText;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                statusEl.textContent = "Error occurred";
+                statusEl.classList.remove("listening");
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                statusEl.textContent = "Ready";
+                statusEl.classList.remove("listening");
+            };
+
+            recognition.start();
+        }
+
+        function stopSpeech() {
+            if (recognition) {
+                recognition.stop();
+                statusEl.textContent = "Stopped";
+                statusEl.classList.remove("listening");
+            }
+        }
+
+        // Translation function
+        async function translateText() {
+            const text = document.getElementById("text").innerText.trim();
+            const target = document.getElementById("targetLang").value;
+            const output = document.getElementById("translated");
+
+            if (!text || text === "Speak something..." || text.includes("Listening")) {
+                output.innerText = "⚠️ No text to translate. Please speak something first.";
+                translationStatusEl.textContent = "No input";
+                return;
+            }
+
+            output.innerText = "Translating...";
+            translationStatusEl.textContent = "Translating...";
+            translationStatusEl.classList.add("translating");
+
+            try {
+                const res = await fetch("/translate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: text, target: target })
+                });
+
+                const data = await res.json();
+                output.innerText = data.translated || "Translation failed";
+                translationStatusEl.textContent = "Translated ✓";
+
+                // Show TTS controls
+                document.getElementById("ttsControls").style.display = "block";
+
+            } catch (err) {
+                output.innerText = "🌐 Translation backend error";
+                translationStatusEl.textContent = "Error";
+            } finally {
+                translationStatusEl.classList.remove("translating");
+            }
+        }
+
+        // Text-to-Speech Functions
+        async function speakTranslatedText() {
+            const text = document.getElementById("translated").innerText.trim();
+            const target = document.getElementById("targetLang").value;
+
+            if (!text || text.includes("Translated text will appear") || text.includes("Translation failed")) {
+                alert("No translated text to speak!");
+                return;
+            }
+
+            await speakText(text, target, "Translated");
+        }
+
+        async function speakOriginalText() {
+            const text = document.getElementById("text").innerText.trim();
+            const lang = document.getElementById("language").value.split('-')[0];
+
+            if (!text || text.includes("Speak something") || text.includes("Listening")) {
+                alert("No text to speak!");
+                return;
+            }
+
+            await speakText(text, lang, "Original");
+        }
+
+        async function speakText(text, lang, type) {
+            const audioPlayer = document.getElementById("audioPlayer");
+
+            try {
+                audioPlayer.src = "";
+
+                const res = await fetch("/gtts-speech", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: text, lang: lang })
+                });
+
+                const data = await res.json();
+
+                if (data.audio) {
+                    const audioUrl = `data:audio/mp3;base64,${data.audio}`;
+                    audioPlayer.src = audioUrl;
+                    currentAudio = audioPlayer;
+                    audioPlayer.play();
+
+                    // Show playing status
+                    translationStatusEl.textContent = `Playing ${type}...`;
+                } else {
+                    alert("Failed to generate speech");
+                }
+
+            } catch (err) {
+                console.error("TTS error:", err);
+                alert("Text-to-speech failed");
+            }
+        }
+
+        function stopAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                translationStatusEl.textContent = "Audio stopped";
+            }
+        }
+
+        // Utility functions
+        function copyText(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+
+            // Show notification
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            btn.style.background = 'linear-gradient(135deg, #10b981 0%, #34d399 100%)';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+            }, 2000);
+        }
+
+        function downloadText(id, filename) {
+            const text = document.getElementById(id).innerText;
+            const blob = new Blob([text], { type: "text/plain" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+
+            // Show notification
+            alert(`Downloaded as ${filename}`);
+        }
+
+        function downloadPDF(id, filename, title) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const content = document.getElementById(id).innerText;
+
+            // Styling
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(20);
+            doc.setTextColor(41, 128, 185);
+            doc.text("Voice Translator Pro", 105, 15, null, null, "center");
+
+            doc.setFontSize(16);
+            doc.setTextColor(52, 73, 94);
+            doc.text(title, 105, 30, null, null, "center");
+
+            // Content
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            const lines = doc.splitTextToSize(content, 180);
+            doc.text(lines, 15, 45);
+
+            // Footer
+            doc.setFontSize(10);
+            doc.setTextColor(128, 128, 128);
+            doc.text(`Generated on ${new Date().toLocaleDateString()}`, 105, 280, null, null, "center");
+
+            doc.save(filename);
+        }
+
+        function saveBothPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const original = document.getElementById("text").innerText.trim();
+            const translated = document.getElementById("translated").innerText.trim();
+
+            if (!original && !translated) {
+                alert("⚠️ Nothing to save!");
+                return;
+            }
+
+            // Header
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(22);
+            doc.setTextColor(102, 126, 234);
+            doc.text("Voice Translator Pro", 105, 15, null, null, "center");
+
+            doc.setFontSize(12);
+            doc.setTextColor(128, 128, 128);
+            doc.text("Complete Translation Report", 105, 22, null, null, "center");
+
+            // Original Text
+            doc.setFontSize(16);
+            doc.setTextColor(41, 128, 185);
+            doc.text("📝 Original Text:", 15, 35);
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            const originalLines = doc.splitTextToSize(original, 180);
+            doc.text(originalLines, 15, 45);
+
+            let y = 45 + (originalLines.length * 7) + 10;
+
+            // Translated Text
+            doc.setFontSize(16);
+            doc.setTextColor(155, 89, 182);
+            doc.text("🌐 Translated Text:", 15, y);
+            y += 10;
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            const translatedLines = doc.splitTextToSize(translated, 180);
+            doc.text(translatedLines, 15, y);
+
+            // Footer
+            y = Math.max(y + (translatedLines.length * 7) + 20, 280);
+            doc.setFontSize(10);
+            doc.setTextColor(128, 128, 128);
+            doc.text(`Generated on ${new Date().toLocaleString()}`, 105, y, null, null, "center");
+
+            doc.save("voice_translation_report.pdf");
+        }
+
+        function clearAll() {
+            if (confirm("Are you sure you want to clear all text?")) {
+                document.getElementById("text").innerText = "";
+                document.getElementById("translated").innerText = "";
+                statusEl.textContent = "Ready";
+                translationStatusEl.textContent = "Waiting...";
+
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
+
+                // Reset placeholders
+                document.getElementById("text").setAttribute("data-placeholder", "Start speaking to see text here...");
+                document.getElementById("translated").setAttribute("data-placeholder", "Translated text will appear here...");
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hide TTS controls initially
+            document.getElementById("ttsControls").style.display = "block";
+
+            // Add placeholder functionality
+            const textAreas = document.querySelectorAll('.text-content');
+            textAreas.forEach(area => {
+                area.addEventListener('focus', function () {
+                    this.removeAttribute('data-placeholder');
+                });
+
+                area.addEventListener('blur', function () {
+                    if (!this.innerText.trim()) {
+                        this.setAttribute('data-placeholder', this.getAttribute('data-placeholder'));
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
