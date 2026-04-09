@@ -4,5 +4,9 @@ numpy==1.26.4
 pandas==2.2.2
 scapy==2.5.0
 scikit-learn==1.4.2
+deep-translator==1.11.4
+SpeechRecognition==3.10.4
+gTTS==2.5.1
+pydub==0.25.1
 setuptools>=68.0.0
 wheel>=0.41.0
